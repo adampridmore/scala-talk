@@ -1,1 +1,2 @@
-sbt new scala/scalatest-example.g8
+# scala-talk
+`sbt new scala/scalatest-example.g8`
