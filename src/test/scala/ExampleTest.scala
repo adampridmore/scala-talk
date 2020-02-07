@@ -128,37 +128,50 @@ class ExamplesTest extends org.scalatest.FunSuite {
   }
 
   test("Pattern Matching"){
-//    def divideByZero(i : int) : Option[Int] =
-//      If (i == 0) None
-//    else  Some(i / 0)
-//
-//    val message = divideByZero(10) match {
-//      case Some(i) => i.toString
-//      case None => “Division by zero!”
-//    }
-//    println(message)
+    def divide(top :Int, bottom : Int) : Option[Int] =
+      if (bottom == 0) None
+      else  Some(top / bottom)
+
+    val ans = divide(10, 5)
+
+    val message = ans match {
+      case Some(i) => i.toString
+      case None => "Division by zero!"
+    }
+
+    println(message)
   }
 
   test("Classes") {
-//    Classes
     // Like Java
     // Inheritance
     // Interfaces
     // Overriding
     // ...
 
-//    class Animal(val name: String, val sound: String){
-//      val greeting = s”I am $name, and I say $sound!)
-//
-//      def greet(){
-//        println(greeting)
-//      }
-//    }
-//
-//    // Companion object (aka static)
-//    object Animal(){
-//    }
+    class Animal(val name: String, val sound: String){
+      val greeting = s"I am $name, and I say $sound!"
+
+      def greet() {
+        println(greeting)
+      }
+    }
+
+    val lion = new Animal("Lion", "Roar")
+
+    println(lion.name)
+    println(lion.sound)
+
+    // Companion object (aka static)
+    object Animal {
+      def whatSound(animal: Animal) = {
+        println(s"${animal.name}s go ${animal.sound}")
+      }
+    }
+
+    Animal.whatSound(lion)
   }
+
 
   test("Case classes") {
 //    case classes
