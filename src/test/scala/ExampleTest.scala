@@ -1,16 +1,38 @@
+import scala.concurrent.Future
+import scala.util.{Failure, Success, Try}
+
+import scala.concurrent.ExecutionContext.Implicits.global
+
 class ExamplesTest extends org.scalatest.FunSuite {
 
 
+  test("My test name"){
+    assert(1 == 1)
+  }
 
 
 
 
 
 
-  test("Variables") {
-    // Type inference
-    var a = 10 // Mutable (don't use these!)
-    val b = 10 // Immutable (use these!)
+
+
+
+  test("Variables (or Values?)") {
+    var a : Int = 10 // Mutable (don't use these!)
+    a = 20 // Can be changed
+
+
+
+
+    val b : Int = 10 // Immutable (use these)
+    // b = 20 // Nope!
+
+
+
+
+
+    val c = 10 // Type inference (so don't have to specify types)
   }
 
 
@@ -25,14 +47,14 @@ class ExamplesTest extends org.scalatest.FunSuite {
       a + b
     }
 
-    println(add(1, 2))
+    println(add(1, 2)) // 3
     println(add(1, b = 2)) // Named arguments
 
 
     // Can be shortened to
-    def addV2(a : Int, b: Int) = a + b
     // No return type (inferred)
-    // No braces (if single line)
+    // No braces (if single line expression)
+    def addV2(a : Int, b: Int) = a + b
   }
 
 
@@ -69,16 +91,20 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
   test("Lists"){
     // Usually Immutable
-    val mySequence = Seq(4,5,6)
-    val myList = List(1,2,3)
-    val myArray = Array(7,8,9)
+    val mySequence = Seq("a","b","c")
+    val myList = List("a","b","c")
+    val myArray = Array("a","b","c")
 
-    println(myList(1)) // "2"
+    println(myList(1)) // "b"
 
     for(i <- mySequence) {
       println(i + 10)
     } // 14, 15, 16
 
+
+    for(i <- Seq(1,2,3,4)) {
+      println(i + 10)
+    }
 
 
 
@@ -96,7 +122,7 @@ class ExamplesTest extends org.scalatest.FunSuite {
     println(myList2.min)
   }
 
-  test("Map"){
+  test("HashMaps"){
     // also immutable by default
     val map = Map(
       "123" -> "Customer_123",
@@ -209,4 +235,114 @@ class ExamplesTest extends org.scalatest.FunSuite {
 //    *Sorry for the pun
   }
 
+  test("Option map and flatMap"){
+    val x: Option[Int] = Some(10)
+
+    val twice: Option[Int] = x match {
+      case None => None
+      case Some(x) => Some(x * 2)
+    }
+
+    val twice2 = x.map(x => x * 2)
+
+    def reciprocal(x : Double) : Option[Double] = if (x == 0) None else Some(1 / x)
+
+    val ans1: Option[Double] = reciprocal(10)
+
+    val ans2: Option[Double] = ans1 match {
+      case None => None
+      case Some(x) => reciprocal(x)
+    }
+
+    val ans3: Option[Double] = ans1.flatMap(reciprocal(_))
+  }
+
+  test("For comp with Option"){
+    def mathsOp1(x : Int) : Option[Int] = Some(x + 1)
+    def mathsOp2(x : Int) : Option[Int] = Some(x * 1)
+    def mathsOp3(x : Int) : Option[Int] = if (x == 0) None else Some(1 / x)
+
+    val a: Option[Int] = mathsOp1(10)
+
+    val b: Option[Int] = a match {
+      case Some(x) => mathsOp2(x)
+      case None => None
+    }
+
+    val ans1: Option[Int] = b match {
+      case Some(x) => mathsOp3(x)
+      case None => None
+    }
+
+
+    val ans2: Option[Int] = mathsOp1(10)
+      .flatMap({
+      x => mathsOp2(x)
+        .flatMap(mathsOp3)
+    })
+
+    val and3: Option[Int] = for{
+      x <- mathsOp1(10)
+      y <- mathsOp2(x)
+    } yield (y)
+  }
+
+  test("Sequences & Lists with map and flatMap"){
+    val nums = Seq(1,2,3)
+    nums.map(x => x * 2) // 2, 4, 6
+
+    val strings = Seq("abc", "def", "hij")
+    strings.flatMap(x => x.toCharArray) // Seq('a','b','c','d','e','f','h','i','j')
+
+    for{
+      a: String <- strings
+      b: Char <- a.toCharArray
+    } yield b
+  }
+
+  // Futures
+  test("Futures") {
+
+
+    val ans: Future[Int] = Future {
+      10
+    }
+
+    ans.onComplete((t: Try[Int]) => t match {
+      case Failure(exception) => println("Failed: " + exception.getMessage)
+      case Success(x) => println("Ans: " + x)
+    })
+
+    ans.map(x => "Ans: " + x)
+
+
+  }
+
+  test("Futures and remote repositories"){
+    case class Customer(id: String, name: String)
+    case class Order(customerId: String, orderDetails: String)
+
+    def getCustomer(customerId: String): Future[Customer] = Future {
+      Customer(customerId, "Fred")
+    }
+
+    def getOrders(customerId: String): Future[Seq[Order]] = Future {
+      Seq(
+        Order(customerId, "Order 1"),
+        Order(customerId, "Order 2"))
+    }
+
+    val customerNameAndOrders = for {
+      customer <- getCustomer("customer-1")
+      orders <- getOrders(customer.id)
+    } yield (orders)
+
+
+    customerNameAndOrders.onComplete { // This is just a shortened match statement
+      case Failure(exception) => println("Failed: " + exception.getMessage)
+      case Success(orders) => orders.map(order => println(s"${order.orderDetails}"))
+    } // Prints "Order 1, Order 2" however it prints it after this method has returned (non-deterministic)
+
+    Thread.sleep(2000)
+  }
 }
