@@ -15,12 +15,14 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-
-
-
   test("Variables (or Values?)") {
+
     var a : Int = 10 // Mutable (don't use these!)
     a = 20 // Can be changed
+
+
+
+
 
 
 
@@ -32,8 +34,13 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
+
+
+
     val c = 10 // Type inference (so don't have to specify types)
   }
+
+
 
 
 
@@ -51,12 +58,20 @@ class ExamplesTest extends org.scalatest.FunSuite {
     println(add(1, b = 2)) // Named arguments
 
 
+
+
+
+
+
+
+
+
+
     // Can be shortened to
     // No return type (inferred)
     // No braces (if single line expression)
     def addV2(a : Int, b: Int) = a + b
   }
-
 
 
 
@@ -76,14 +91,17 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
+
+
+
+
+
+
   test("String interpolation"){
     val name = "Dave"
 
     println(s"Hello $name")
   }
-
-
-
 
 
 
@@ -97,14 +115,23 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     println(myList(1)) // "b"
 
-    for(i <- mySequence) {
+
+
+
+
+
+
+
+
+
+
+
+
+    // Iterate (this isn't very FP..)
+    for(i <- Seq(4,5,6)) {
       println(i + 10)
     } // 14, 15, 16
 
-
-    for(i <- Seq(1,2,3,4)) {
-      println(i + 10)
-    }
 
 
 
@@ -113,14 +140,22 @@ class ExamplesTest extends org.scalatest.FunSuite {
     def isEven(i: Int) = i % 2 == 0
 
     val myList2: List[Int] = (1 to 10).toList
-    println(myList2
+
+    println((1 to 10)
       .filter(isEven)
       .map(i => i + 10)
-      .mkString(System.lineSeparator()))
+      .mkString(",")) // 12,14,16,18,20
 
-    println(myList2.sum)
-    println(myList2.min)
+    println(myList2.sum) // 55
+    println(myList2.min) // 1
   }
+
+
+
+
+
+
+
 
   test("HashMaps"){
     // also immutable by default
@@ -132,6 +167,16 @@ class ExamplesTest extends org.scalatest.FunSuite {
     println(map("123")) // "Customer_123"
   }
 
+
+
+
+
+
+
+
+
+
+
   test("Tuple"){
     val tuple = (4, "Four","IV")
 
@@ -140,9 +185,37 @@ class ExamplesTest extends org.scalatest.FunSuite {
     println(tuple._3)
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
   test("Option type"){
     // No more nulls.
     // Scala has null, but no one uses them.
+
+    val x = Some(10)
+    val y = None
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     def divide(top :Int, bottom : Int) : Option[Int] =
       if (bottom == 0) None
@@ -152,6 +225,17 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     println(ans) // Some(2)
   }
+
+
+
+
+
+
+
+
+
+
+
 
   test("Pattern Matching"){
     def divide(top :Int, bottom : Int) : Option[Int] =
@@ -168,12 +252,20 @@ class ExamplesTest extends org.scalatest.FunSuite {
     println(message)
   }
 
+
+
+
+
+
   test("Classes") {
     // Like Java
     // Inheritance
-    // Interfaces
+    // Traits (bit like Interfaces)
     // Overriding
+    // Operator overloading
     // ...
+
+
 
     class Animal(val name: String, val sound: String){
       val greeting = s"I am $name, and I say $sound!"
@@ -188,6 +280,13 @@ class ExamplesTest extends org.scalatest.FunSuite {
     println(lion.name)
     println(lion.sound)
 
+
+
+
+
+
+
+
     // Companion object (aka static)
     object Animal {
       def whatSound(animal: Animal) = {
@@ -197,6 +296,15 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     Animal.whatSound(lion)
   }
+
+
+
+
+
+
+
+
+
 
 
   test("Case classes") {
@@ -222,9 +330,22 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
   }
 
+
+
+
+
+
+
+
   test("Higher order functions"){
 //    Functions that take or return functions
   }
+
+
+
+
+
+
 
   test("Exceptions"){
 //    Try not too*
@@ -235,6 +356,17 @@ class ExamplesTest extends org.scalatest.FunSuite {
 //    *Sorry for the pun
   }
 
+
+
+
+
+
+
+
+
+
+
+
   test("Option map and flatMap"){
     val x: Option[Int] = Some(10)
 
@@ -243,7 +375,17 @@ class ExamplesTest extends org.scalatest.FunSuite {
       case Some(x) => Some(x * 2)
     }
 
-    val twice2 = x.map(x => x * 2)
+    // Map
+    val twice2: Option[Int] = x.map(x => x * 2)
+
+
+
+
+
+
+
+
+
 
     def reciprocal(x : Double) : Option[Double] = if (x == 0) None else Some(1 / x)
 
@@ -254,10 +396,19 @@ class ExamplesTest extends org.scalatest.FunSuite {
       case Some(x) => reciprocal(x)
     }
 
-    val ans3: Option[Double] = ans1.flatMap(reciprocal(_))
+    val ans3: Option[Double] = reciprocal(10)
+      .flatMap(reciprocal)
   }
 
-  test("For comp with Option"){
+
+
+
+
+
+
+
+
+  test("For comprehension with Option"){
     def mathsOp1(x : Int) : Option[Int] = Some(x + 1)
     def mathsOp2(x : Int) : Option[Int] = Some(x * 1)
     def mathsOp3(x : Int) : Option[Int] = if (x == 0) None else Some(1 / x)
@@ -287,6 +438,15 @@ class ExamplesTest extends org.scalatest.FunSuite {
     } yield (y)
   }
 
+
+
+
+
+
+
+
+
+
   test("Sequences & Lists with map and flatMap"){
     val nums = Seq(1,2,3)
     nums.map(x => x * 2) // 2, 4, 6
@@ -300,9 +460,15 @@ class ExamplesTest extends org.scalatest.FunSuite {
     } yield b
   }
 
+
+
+
+
+
+
+
   // Futures
   test("Futures") {
-
 
     val ans: Future[Int] = Future {
       10
@@ -313,10 +479,23 @@ class ExamplesTest extends org.scalatest.FunSuite {
       case Success(x) => println("Ans: " + x)
     })
 
-    ans.map(x => "Ans: " + x)
-
-
+    val ans2: Future[String] =
+      ans.map(x => "Ans: " + x)
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   test("Futures and remote repositories"){
     case class Customer(id: String, name: String)
