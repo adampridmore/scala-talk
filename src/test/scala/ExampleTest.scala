@@ -6,9 +6,11 @@ import scala.concurrent.ExecutionContext.Implicits.global
 class ExamplesTest extends org.scalatest.FunSuite {
 
 
+
   test("My test name"){
     assert(1 == 1)
   }
+
 
 
 
@@ -19,8 +21,6 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     var a : Int = 10 // Mutable (don't use these!)
     a = 20 // Can be changed
-
-
 
 
 
@@ -200,9 +200,9 @@ class ExamplesTest extends org.scalatest.FunSuite {
   test("Option type"){
     // No more nulls.
     // Scala has null, but no one uses them.
-
     val x = Some(10)
     val y = None
+
 
 
 
@@ -307,27 +307,77 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-  test("Case classes") {
-//    case classes
-//      Immutable data types. Very good for domain modelling
-//
-//    case class Card(value: Value, suit: Suit)
-//
-//    trait Value
-//    case class Number(num: Int) extends Value
-//    case class Jack extends Value
-//    case class Queen extends Value
-//    case class King extends Value
-//
-//    trait Suit
-//    case class Heart extends Suit
-//    case class Diamond extends Suit
-//    case class Spade extends Suit
-//    case class Club extends Suit
-//
-//    let card1 = Card(Number(3), Heart)
-//    let card2 = Card(Jack, Spade)
+  test("Case classes") {//    case classes
+    //  Immutable data types.
+    //  Very good for domain modelling
 
+    case class Person(name: String, id: String)
+
+    val peter = Person("Peter", "123")
+    peter.name // Peter
+    peter.id // 123
+
+
+
+
+
+
+
+
+
+
+
+    // Supports equality
+    val betty = Person("Betty", "456")
+    peter == betty // false
+
+    val aDuplicatePeter = Person("Peter", "123")
+
+    peter == aDuplicatePeter // true
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // Copying with changes
+    val aDifferentPeter = peter.copy(id = "789")
+    aDifferentPeter.name // "Peter"
+    aDifferentPeter.id // "789"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    case class FaceValue(val value: Int)
+
+    trait Suit
+    case class Club() extends Suit
+    case class Diamond() extends Suit
+    case class Spade() extends Suit
+    case class Heart() extends Suit
+
+    case class Card(suit: Suit, value: FaceValue)
+
+    val player1Hand = List(Card(Heart(),FaceValue(2)))
   }
 
 
@@ -337,9 +387,29 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-  test("Higher order functions"){
-//    Functions that take or return functions
+  test("Higher order functions") {
+    // Functions that take functions as parameters
+    case class Product(name: String)
+
+    val products = Product("Wolf T-Shirt")
+
+    def prettyPrinter[T](t: T, getDescription: T => String): Unit ={
+      val desc = getDescription(t)
+      val line = "*" * desc.length + 4
+      println(line)
+      println(desc)
+      println(line)
+    }
+
+    def getDescription(p: Product) = p.name
+
+    val total = prettyPrinter[Product](products, getDescription)
   }
+
+
+
+
+
 
 
 
@@ -348,19 +418,59 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
   test("Exceptions"){
-//    Try not too*
-//
-//    Not very functional.
-//      Try, Either or Case Class
-//
-//    *Sorry for the pun
+    // Try not too
+    // Not very functional
+    // But you can
+
+    def createCustomerId2(i: Int): String = {
+      if (i < 0 || i > 1000000)
+        throw new RuntimeException("Customer id outside of range 0 to 1000000")
+      else "CN-" + i.toString
+    }
+
+    try {
+      val customerId = createCustomerId2(123)
+      println("Created customerId: " + customerId)
+    } catch {
+      case e : RuntimeException => println("Error: " + e.getMessage)
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//      Use Try, Either or a Case Class (which are all just case classes!)
+    case class Error(message: String, code: Int)
+    def createCustomerId(i: Int): Either[Error, String] = {
+      if (i < 0 || i > 1000000)
+        Left(Error("Customer id outside of range 0 to 1000000", 123))
+      else
+        Right("CN-" + i.toString)
+    }
+
+    createCustomerId(123) match {
+      case Left(error) => println(error)
+      case Right(customerId) => println("Created customerId: " + customerId)
+    }
+
+    // Try us like Either, but Left is an exception
+
+
+
+
+
+
   }
-
-
-
-
-
-
 
 
 
@@ -370,12 +480,26 @@ class ExamplesTest extends org.scalatest.FunSuite {
   test("Option map and flatMap"){
     val x: Option[Int] = Some(10)
 
+    //val ans = x * 2 // Doesn't compile
+
     val twice: Option[Int] = x match {
       case None => None
       case Some(x) => Some(x * 2)
     }
 
-    // Map
+
+
+
+
+
+
+
+
+
+
+    // Map.
+    // Gets what's in the box,
+    // apply method and put back in the box
     val twice2: Option[Int] = x.map(x => x * 2)
 
 
@@ -383,20 +507,29 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
+    val twice3 = x.map(_ * 2)
 
 
 
 
-    def reciprocal(x : Double) : Option[Double] = if (x == 0) None else Some(1 / x)
 
-    val ans1: Option[Double] = reciprocal(10)
 
-    val ans2: Option[Double] = ans1 match {
+
+
+
+    def reciprocal(x : Double) : Option[Double] =
+      if (x == 0) None
+      else Some(1 / x)
+
+    val ans1 = reciprocal(10)
+    val ans2: Option[Option[Double]] = ans1.map(reciprocal)
+
+    val ans3: Option[Double] = ans1 match {
       case None => None
       case Some(x) => reciprocal(x)
     }
 
-    val ans3: Option[Double] = reciprocal(10)
+    val ans4: Option[Double] = reciprocal(10)
       .flatMap(reciprocal)
   }
 
@@ -411,36 +544,23 @@ class ExamplesTest extends org.scalatest.FunSuite {
   test("For comprehension with Option"){
     def mathsOp1(x : Int) : Option[Int] = Some(x + 1)
     def mathsOp2(x : Int) : Option[Int] = Some(x * 1)
-    def mathsOp3(x : Int) : Option[Int] = if (x == 0) None else Some(1 / x)
+    def mathsOp3(x : Int) : Option[Int] =
+      if (x == 0) None
+      else Some(1 / x)
 
-    val a: Option[Int] = mathsOp1(10)
-
-    val b: Option[Int] = a match {
-      case Some(x) => mathsOp2(x)
-      case None => None
-    }
-
-    val ans1: Option[Int] = b match {
-      case Some(x) => mathsOp3(x)
-      case None => None
-    }
+    val ans1: Option[Int] =
+      mathsOp1(10)
+        .flatMap(x => mathsOp2(x))
+        .flatMap(y => mathsOp3(y))
 
 
-    val ans2: Option[Int] = mathsOp1(10)
-      .flatMap({
-      x => mathsOp2(x)
-        .flatMap(mathsOp3)
-    })
 
-    val and3: Option[Int] = for{
+    val and2: Option[Int] = for{
       x <- mathsOp1(10)
       y <- mathsOp2(x)
-    } yield (y)
+      z <- mathsOp3(y)
+    } yield z
   }
-
-
-
-
 
 
 
@@ -452,7 +572,8 @@ class ExamplesTest extends org.scalatest.FunSuite {
     nums.map(x => x * 2) // 2, 4, 6
 
     val strings = Seq("abc", "def", "hij")
-    strings.flatMap(x => x.toCharArray) // Seq('a','b','c','d','e','f','h','i','j')
+    strings
+      .flatMap(x => x.toCharArray) // Seq('a','b','c','d','e','f','h','i','j')
 
     for{
       a: String <- strings
@@ -466,11 +587,11 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-
   // Futures
   test("Futures") {
 
     val ans: Future[Int] = Future {
+      // Could be slow to calculate, or from a RPC
       10
     }
 
@@ -479,11 +600,20 @@ class ExamplesTest extends org.scalatest.FunSuite {
       case Success(x) => println("Ans: " + x)
     })
 
+
+
+
+
+
+
+
     val ans2: Future[String] =
       ans.map(x => "Ans: " + x)
+
+
+    val ans3 : Future[String] =
+      ans.flatMap(x => Future{"Ans: " + x})
   }
-
-
 
 
 
@@ -501,20 +631,22 @@ class ExamplesTest extends org.scalatest.FunSuite {
     case class Customer(id: String, name: String)
     case class Order(customerId: String, orderDetails: String)
 
-    def getCustomer(customerId: String): Future[Customer] = Future {
-      Customer(customerId, "Fred")
-    }
+    def getCustomer(customerId: String): Future[Customer] =
+      Future {
+        Customer(customerId, "Fred")
+      }
 
-    def getOrders(customerId: String): Future[Seq[Order]] = Future {
-      Seq(
-        Order(customerId, "Order 1"),
-        Order(customerId, "Order 2"))
-    }
+    def getOrders(customerId: String): Future[Seq[Order]] =
+      Future {
+        Seq(
+          Order(customerId, "Order 1"),
+          Order(customerId, "Order 2"))
+      }
 
     val customerNameAndOrders = for {
       customer <- getCustomer("customer-1")
       orders <- getOrders(customer.id)
-    } yield (orders)
+    } yield orders
 
 
     customerNameAndOrders.onComplete { // This is just a shortened match statement
@@ -523,5 +655,46 @@ class ExamplesTest extends org.scalatest.FunSuite {
     } // Prints "Order 1, Order 2" however it prints it after this method has returned (non-deterministic)
 
     Thread.sleep(2000)
+  }
+
+
+
+
+
+
+
+
+
+
+  // End
+
+
+
+
+
+
+
+
+
+  test("Recursion") {
+    case class Product(cost: Int)
+
+    val products = List(Product(10), Product(20))
+
+    def mySum[T](items :List[T],
+                 getValue : T => Int): Int = {
+      items match {
+        case item :: tail =>
+          getValue(item) + mySum(tail, getValue)
+        case Nil => 0
+      }
+    }
+
+    def getValue(p: Product) = p.cost
+
+    val total = mySum[Product](products, getValue)
+    total // 30
+
+    products.map(_.cost).sum
   }
 }
