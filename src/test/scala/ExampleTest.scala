@@ -28,7 +28,7 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
     val b : Int = 10 // Immutable (use these)
-    // b = 20 // Nope!
+    // b = 20   //    Nope!
 
 
 
@@ -78,7 +78,8 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
   test("If") {
-    //  If is an expression (it evaluates to a value)
+    //  If is an expression
+    //  (it evaluates to a value)
     val a = 10
     val message = if(a > 1) "larger than one"
                   else "less than one"
@@ -102,7 +103,6 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     println(s"Hello $name")
   }
-
 
 
 
@@ -141,7 +141,7 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     val myList2: List[Int] = (1 to 10).toList
 
-    println((1 to 10)
+    println(myList2
       .filter(isEven)
       .map(i => i + 10)
       .mkString(",")) // 12,14,16,18,20
@@ -178,13 +178,13 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
   test("Tuple"){
-    val tuple = (4, "Four","IV")
+    val tuple: (Int, String, String) =
+      (4, "Four","IV")
 
     println(tuple._1)
     println(tuple._2)
     println(tuple._3)
   }
-
 
 
 
@@ -217,11 +217,13 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-    def divide(top :Int, bottom : Int) : Option[Int] =
+    def divide(top : Int,
+               bottom : Int) : Option[Int] =
       if (bottom == 0) None
       else  Some(top / bottom)
 
-    val ans = divide(10, 5)
+    val ans: Option[Int] =
+      divide(10, 5)
 
     println(ans) // Some(2)
   }
@@ -235,12 +237,10 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-
-
   test("Pattern Matching"){
     def divide(top :Int, bottom : Int) : Option[Int] =
       if (bottom == 0) None
-      else  Some(top / bottom)
+      else Some(top / bottom)
 
     val ans = divide(10, 5)
 
@@ -258,7 +258,7 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
   test("Classes") {
-    // Like Java
+    // Like Java / C#
     // Inheritance
     // Traits (bit like Interfaces)
     // Overriding
@@ -367,7 +367,7 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-    case class FaceValue(val value: Int)
+    case class FaceValue(value: Int)
 
     trait Suit
     case class Club() extends Suit
@@ -377,11 +377,11 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     case class Card(suit: Suit, value: FaceValue)
 
-    val player1Hand = List(Card(Heart(),FaceValue(2)))
+    val player1Hand = List(
+      Card(Heart(),FaceValue(2)),
+      Card(Diamond(),FaceValue(5))
+    )
   }
-
-
-
 
 
 
@@ -393,20 +393,20 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     val products = Product("Wolf T-Shirt")
 
-    def prettyPrinter[T](t: T, getDescription: T => String): Unit ={
+    def pretty[T](t: T,
+                  getDescription: T => String): Unit ={
       val desc = getDescription(t)
-      val line = "*" * desc.length + 4
+      val line = "*" * (desc.length + 4)
       println(line)
-      println(desc)
+      println(s"* $desc *")
       println(line)
     }
 
     def getDescription(p: Product) = p.name
 
-    val total = prettyPrinter[Product](products, getDescription)
+    val total = pretty[Product](products,
+                                getDescription)
   }
-
-
 
 
 
@@ -447,9 +447,8 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-
-
-//      Use Try, Either or a Case Class (which are all just case classes!)
+//  Use Try, Either or a Case Class
+//  (which are all just case classes!)
     case class Error(message: String, code: Int)
     def createCustomerId(i: Int): Either[Error, String] = {
       if (i < 0 || i > 1000000)
@@ -464,13 +463,14 @@ class ExamplesTest extends org.scalatest.FunSuite {
     }
 
     // Try us like Either, but Left is an exception
-
-
-
-
-
-
   }
+
+
+
+
+
+
+
 
 
 
@@ -537,10 +537,6 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-
-
-
-
   test("For comprehension with Option"){
     def mathsOp1(x : Int) : Option[Int] = Some(x + 1)
     def mathsOp2(x : Int) : Option[Int] = Some(x * 1)
@@ -561,6 +557,10 @@ class ExamplesTest extends org.scalatest.FunSuite {
       z <- mathsOp3(y)
     } yield z
   }
+
+
+
+
 
 
 
@@ -656,6 +656,7 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     Thread.sleep(2000)
   }
+
 
 
 
