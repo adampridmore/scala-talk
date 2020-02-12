@@ -698,4 +698,43 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     products.map(_.cost).sum
   }
+
+
+
+
+
+
+
+
+
+  test("Partial function application") {
+    def add(a: Int)(b: Int) = a + b
+
+    def addOne = add(1)(_)
+
+    println(addOne(5)) // 6
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+  test("Function composition") {
+    def addThree = { x : Int => x + 3}
+
+    def multiplyByTen = { x : Int => x * 10 }
+
+    def add3Times10 = addThree andThen multiplyByTen
+
+    val ans = add3Times10(2) // 50
+    println(ans)
+  }
 }
