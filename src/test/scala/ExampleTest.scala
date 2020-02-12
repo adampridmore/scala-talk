@@ -737,4 +737,24 @@ class ExamplesTest extends org.scalatest.FunSuite {
     val ans = add3Times10(2) // 50
     println(ans)
   }
+
+
+
+
+
+
+
+
+
+
+  test("Function composition and partial application") {
+    def add(x: Int)(y: Int) = x + y
+
+    def multiply(x: Int)(y: Int) = x * y
+
+    def add3Times10 = (add(3)(_)) andThen (multiply(10)(_))
+
+    val ans = add3Times10(2) // 50
+    println(ans)
+  }
 }
