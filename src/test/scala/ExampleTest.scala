@@ -184,10 +184,10 @@ class ExamplesTest extends org.scalatest.FunSuite {
     println(tuple._1)
     println(tuple._2)
     println(tuple._3)
+
+    val (number, word, numeral) = tuple
+    println(s"Number: $number Word: $word, Roman Numeral: $numeral")
   }
-
-
-
 
 
 
@@ -369,17 +369,17 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
     case class FaceValue(value: Int)
 
-    trait Suit
-    case class Club() extends Suit
-    case class Diamond() extends Suit
-    case class Spade() extends Suit
-    case class Heart() extends Suit
+    sealed trait Suit
+    case object Club extends Suit
+    case object Diamond extends Suit
+    case object Spade extends Suit
+    case object Heart extends Suit
 
     case class Card(suit: Suit, value: FaceValue)
 
     val player1Hand = List(
-      Card(Heart(),FaceValue(2)),
-      Card(Diamond(),FaceValue(5))
+      Card(Heart,FaceValue(2)),
+      Card(Diamond,FaceValue(5))
     )
   }
 
