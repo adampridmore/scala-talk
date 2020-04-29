@@ -113,8 +113,8 @@ class ExamplesTest extends org.scalatest.FunSuite {
     val myList = List("a","b","c")
     val myArray = Array("a","b","c")
 
+    // List accessor
     println(myList(1)) // "b"
-
 
 
 
@@ -137,20 +137,20 @@ class ExamplesTest extends org.scalatest.FunSuite {
 
 
 
-    def isEven(i: Int) = i % 2 == 0
+    def isEven(i: Int) : Boolean = i % 2 == 0
 
     val myList2: List[Int] = (1 to 10).toList
 
-    println(myList2
-      .filter(isEven)
-      .map(i => i + 10)
-      .mkString(",")) // 12,14,16,18,20
+    val listAsCsv =
+      myList2.filter(isEven)
+        .map(i => i + 10)
+        .mkString(",") // 12,14,16,18,20
+
+    println(listAsCsv)
 
     println(myList2.sum) // 55
     println(myList2.min) // 1
   }
-
-
 
 
 
@@ -220,7 +220,7 @@ class ExamplesTest extends org.scalatest.FunSuite {
     def divide(top : Int,
                bottom : Int) : Option[Int] =
       if (bottom == 0) None
-      else  Some(top / bottom)
+      else Some(top / bottom)
 
     val ans: Option[Int] =
       divide(10, 5)
