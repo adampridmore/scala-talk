@@ -101,7 +101,7 @@ class ExamplesTest extends org.scalatest.FunSuite {
   test("String interpolation"){
     val name = "Dave"
 
-    println(s"Hello $name")
+    println(s"Hello $name") // Hello Dave
   }
 
 
