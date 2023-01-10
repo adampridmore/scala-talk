@@ -1,9 +1,12 @@
 import scala.concurrent.Future
 import scala.util.{Failure, Success, Try}
 
+import org.scalatest._
+import funsuite._
+
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ExamplesTest extends org.scalatest.FunSuite {
+class ExamplesTest extends AnyFunSuite {
 
 
 
