@@ -6,21 +6,22 @@ import funsuite._
 
 import scala.concurrent.ExecutionContext.Implicits.global
 
-class ExamplesTest extends AnyFunSuite {
+import org.scalatest.wordspec.AnyWordSpec
+
+class ExamplesSpec extends AnyWordSpec {
 
 
 
-  test("My test name"){
-    assert(1 == 1)
-  }
+   "My test name" in {
+     assert(1 == 1)
+   }
 
 
 
 
 
 
-
-  test("Variables (or Values?)") {
+   "Variables (or Values?)" in {
 
     var a : Int = 10 // Mutable (don't use these!)
     a = 20 // Can be changed
@@ -50,7 +51,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Functions"){
+  "Functions" in {
 
     // Usually no return statement)
     def add(a : Int, b: Int) : Int = {
@@ -80,7 +81,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("If") {
+  "If" in {
     //  If is an expression
     //  (it evaluates to a value)
     val a = 10
@@ -101,7 +102,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("String interpolation"){
+  "String interpolation" in {
     val name = "Dave"
 
     println(s"Hello $name") // Hello Dave
@@ -110,7 +111,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Lists"){
+  "Lists" in {
     // Usually Immutable
     val mySequence = Seq("a","b","c")
     val myList = List("a","b","c")
@@ -160,7 +161,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("HashMaps"){
+  "HashMaps" in {
     // also immutable by default
     val map = Map(
       "123" -> "Customer_123",
@@ -180,7 +181,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Tuple"){
+  "Tuple" in {
     val tuple: (Int, String, String) =
       (4, "Four","IV")
 
@@ -200,7 +201,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Option type"){
+  "Option type" in {
     // No more nulls.
     // Scala has null, but no one uses them.
     val x = Some(10)
@@ -240,7 +241,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Pattern Matching"){
+  "Pattern Matching" in {
     def divide(top :Int, bottom : Int) : Option[Int] =
       if (bottom == 0) None
       else Some(top / bottom)
@@ -260,7 +261,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Classes") {
+  "Classes" in {
     // Like Java / C#
     // Inheritance
     // Traits (bit like Interfaces)
@@ -310,7 +311,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Case classes") {//    case classes
+  "Case classes" in {//    case classes
     //  Immutable data types.
     //  Very good for domain modelling
 
@@ -390,7 +391,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Higher order functions") {
+  "Higher order functions" in {
     // Functions that take functions as parameters
     case class Product(name: String)
 
@@ -420,7 +421,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Exceptions"){
+  "Exceptions" in {
     // Try not too
     // Not very functional
     // But you can
@@ -480,7 +481,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Option map and flatMap"){
+  "Option map and flatMap" in {
     val x: Option[Int] = Some(10)
 
     //val ans = x * 2 // Doesn't compile
@@ -540,7 +541,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("For comprehension with Option"){
+  "For comprehension with Option" in {
     def mathsOp1(x : Int) : Option[Int] = Some(x + 1)
     def mathsOp2(x : Int) : Option[Int] = Some(x * 1)
     def mathsOp3(x : Int) : Option[Int] =
@@ -570,7 +571,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Sequences & Lists with map and flatMap"){
+  "Sequences & Lists with map and flatMap" in {
     val nums = Seq(1,2,3)
     nums.map(x => x * 2) // 2, 4, 6
 
@@ -591,7 +592,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
   // Futures
-  test("Futures") {
+  "Futures" in {
 
     val ans: Future[Int] = Future {
       // Could be slow to calculate, or from a RPC
@@ -630,7 +631,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Futures and remote repositories"){
+  "Futures and remote repositories" in {
     case class Customer(id: String, name: String)
     case class Order(customerId: String, orderDetails: String)
 
@@ -680,7 +681,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Recursion") {
+  "Recursion" in { 
     case class Product(cost: Int)
 
     val products = List(Product(10), Product(20))
@@ -710,7 +711,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Partial function application") {
+  "Partial function application" in {
     def add(a: Int)(b: Int) = a + b
 
     def addOne = add(1)(_)
@@ -730,7 +731,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Function composition") {
+  "Function composition" in {
     def addThree = { x : Int => x + 3}
 
     def multiplyByTen = { x : Int => x * 10 }
@@ -750,7 +751,7 @@ class ExamplesTest extends AnyFunSuite {
 
 
 
-  test("Function composition and partial application") {
+  "Function composition and partial application" in {
     def add(x: Int)(y: Int) = x + y
 
     def multiply(x: Int)(y: Int) = x * y
