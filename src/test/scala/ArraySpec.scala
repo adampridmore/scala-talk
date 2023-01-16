@@ -33,11 +33,11 @@ class ArraySpec extends AnyWordSpec with Matchers {
       single.size shouldBe 1
     }
     
-    "Have a head" in {
+    "have a head" in {
       single.head shouldBe "a"
     }
 
-    "Have an empty tail" in {
+    "have an empty tail" in {
       single.tail shouldBe Array.empty
     }
   }
