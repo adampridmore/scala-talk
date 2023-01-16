@@ -10,9 +10,8 @@ import org.scalatest.wordspec.AnyWordSpec
 import org.scalatest.matchers.should.Matchers
 
 class ArraySpec extends AnyWordSpec with Matchers {
-
   "an empty array" should {
-    var empty = Array.empty
+    val empty = Array.empty
     
     "be empty" in {
       empty.isEmpty shouldBe true
@@ -24,7 +23,7 @@ class ArraySpec extends AnyWordSpec with Matchers {
   }
 
   "A single element array" should {
-    var single = Array("a")
+    val single = Array("a")
 
     "be not empty" in {
       single.isEmpty shouldBe false
